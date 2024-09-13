@@ -1,4 +1,4 @@
-install numpy
+
 import numpy as np
 
 class LinearRegression:
