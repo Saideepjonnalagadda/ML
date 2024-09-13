@@ -1,9 +1,9 @@
-
 import numpy as np
 
 class LinearRegression:
     def __init__(self):
         self.weights = None
+        self.loss_history = []  # List to store loss over epochs
 
     def fit(self, X, y, batch_size=32, regularization=0, max_epochs=100, patience=3):
         np.random.seed(42)
@@ -11,8 +11,9 @@ class LinearRegression:
         # Initialize variables
         n_samples, n_features = X.shape
         X = np.hstack([X, np.ones((n_samples, 1))])  # Add 1 for bias term
-        y = y.reshape(-1, 1)  # Ensuring y is a column vector
-        self.weights = np.random.randn(n_features + 1, 1)
+        y = y.reshape(-1, y.shape[1] if y.ndim > 1 else 1)  # Ensure y is 2D for multi-output
+
+        self.weights = np.random.randn(n_features + 1, y.shape[1])  # Adjust weights for multiple outputs
 
         # Split data into training and validation set (90% train, 10% validation)
         split_at = int(0.9 * n_samples)
@@ -42,7 +43,7 @@ class LinearRegression:
                 
                 # Compute errors
                 errors = y_pred - y_batch
-                
+
                 # Compute gradients
                 grad_weights = X_batch.T @ errors / batch_size + regularization * self.weights / batch_size
                 
@@ -52,7 +53,8 @@ class LinearRegression:
             # Validate
             val_pred = X_val @ self.weights
             val_loss = np.mean((val_pred - y_val) ** 2)
-            
+            self.loss_history.append(val_loss)  # Track validation loss
+
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 best_weights = self.weights
@@ -71,7 +73,7 @@ class LinearRegression:
 
     def score(self, X, y):
         y_pred = self.predict(X)
-        return np.mean((y_pred - y.reshape(-1, 1)) ** 2)
+        return np.mean((y_pred - y.reshape(-1, y.shape[1] if y.ndim > 1 else 1)) ** 2)
 
     def save(self, filepath):
         np.savez(filepath, weights=self.weights)
