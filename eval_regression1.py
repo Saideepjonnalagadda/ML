@@ -19,12 +19,5 @@ def main():
     evaluate_regression_model(X_single, y_single,
                               output_type="Single Output-Petal Width)",
                               model_path='model_single_output.npz')
-    #Multiple output evaluation
-    X_multiple = iris.data[:, :2]        
-    y_multiple = iris.data[:, 2:4]       
-    evaluate_regression_model(X_multiple, y_multiple,
-                              output_type="Multiple Outputs - Petal Length and Petal Width)",
-                              model_path='model_multiple_outputs.npz')
-
 if __name__ == "__main__":
     main()

@@ -4,26 +4,44 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from LinearRegression import LinearRegression
 
-# Load data
-iris = load_iris()
-X = iris.data[:, 1:2]  # Use sepal width as feature
-y = iris.data[:, 2]    # Predict petal length
+def train_regression(X, y, output_type, save_path, regularization=0, is_multiple_output=False):
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+    model = LinearRegression()
+    print(f" {output_type} : Training regression model")
+    model.fit(X_train, y_train, regularization=regularization)
+    model.save(save_path)
+    plt.plot(model.loss)
+    plt.title(f'Training Loss over Epochs ({output_type})')
+    plt.xlabel('Epochs')
+    plt.ylabel('MSE Loss on training Set')
+    plt.show()
 
-# Train model
-model = LinearRegression()
-model.fit(X_train, y_train, batch_size=32, max_epochs=100, patience=3)
+    # Evaluation
+    test_mse = model.score(X_test, y_test)
+    print(f"Test MSE for model {output_type} : {test_mse}")
 
-# Save the model
-model.save('model_regression2.npz')
+    print(f"Model saved at file location {save_path}.")
 
-# Plot the loss function
-plt.plot(model.loss_history)
-plt.title('Training Loss over Epochs (Regression 2)')
-plt.xlabel('Epochs')
-plt.ylabel('MSE Loss on Validation Set')
-plt.show()
+def main():
+    iris = load_iris()
 
-print("Training complete and model saved.")
+    
+    # Single output regression - Predicting petal length based on sepal length and width
+    X_single = iris.data[:, :2]           
+    y_single = iris.data[:, 2]            
+    train_regression(X_single, y_single,
+                           output_type="Single Output - Petal length",
+                           save_path='model_single_output.npz',
+                           regularization=0)
+
+    # Single output regression with L2 regularization- Predicting petal length based on sepal length and width
+    X_single = iris.data[:, :2]           
+    y_single = iris.data[:, 2]            
+    train_regression(X_single, y_single,
+                           output_type="L2 regularized Single Output - Petal length",
+                           save_path='model_single_output.npz',
+                           regularization=0.4)  
+
+if __name__ == "__main__":
+    main()

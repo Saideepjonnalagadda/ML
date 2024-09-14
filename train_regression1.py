@@ -41,25 +41,7 @@ def main():
     train_regression(X_single, y_single,
                            output_type="L2 regularized Single Output - Petal Width",
                            save_path='model_single_output.npz',
-                           regularization=0.4)
-    
-    # Multiple output regression - Predicting both petal length and petal width based on sepal length and width
-    X_multiple = iris.data[:, :2]        
-    y_multiple = iris.data[:, 2:4]       
-    train_regression(X_multiple, y_multiple,
-                           output_type="Multiple Outputs-Petal Length and Petal Width",
-                           save_path='model_multiple_outputs.npz',
-                           regularization=0) 
-    
-    # Multiple output regression - Predicting both petal length and petal width based on sepal length and width
-    X_multiple = iris.data[:, :2]        
-    y_multiple = iris.data[:, 2:4]       
-    train_regression(X_multiple, y_multiple,
-                           output_type="Multiple Outputs-Petal Length and Petal Width",
-                           save_path='model_multiple_outputs.npz',
-                           regularization=0.4) 
-
-     
+                           regularization=0.4)    
 
 if __name__ == "__main__":
     main()
