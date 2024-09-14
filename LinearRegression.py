@@ -28,8 +28,8 @@ class LinearRegression:
                 end = start + batch_size
                 X_b = X_train_shuffled[start:end]
                 y_b = y_train_shuffled[start:end]
-                y_pred = X_b @ self.weights
-                errors = y_pred - y_
+                y_pred = X_b @ self.w
+                errors = y_pred - y_b
                 grad_weights = X_b.T @ errors / batch_size + regularization * self.w / batch_size
                 self.w -= 0.01 * grad_weights
 
@@ -55,7 +55,8 @@ class LinearRegression:
 
     def score(self, X, y):
         y_pred = self.predict(X)
-        return np.mean((y_pred - y.reshape(-1, y.shape[1] if y.ndim > 1 else 1)) ** 2)
+        y = y.reshape(-1, y.shape[1] if y.ndim > 1 else 1)
+        return np.mean((y_pred - y) ** 2)
 
     def save(self, filepath):
         np.savez(filepath, weights=self.w)
