@@ -2,74 +2,69 @@ import numpy as np
 
 class LinearRegression:
     def __init__(self):
-        self.weights = None
-        self.loss_history = []  # List to store loss over epochs
+        self.w = None
+        self.loss = []  
 
     def fit(self, X, y, batch_size=32, regularization=0, max_epochs=100, patience=3):
         np.random.seed(42)
-        
-        # Initialize variables
-        n_samples, n_features = X.shape
-        X = np.hstack([X, np.ones((n_samples, 1))])  # Add 1 for bias term
-        y = y.reshape(-1, y.shape[1] if y.ndim > 1 else 1)  # Ensure y is 2D for multi-output
+        n_rows, n_cols = X.shape
+        X = np.hstack([X, np.ones((n_rows, 1))])
+        y = y.reshape(-1, y.shape[1] if y.ndim > 1 else 1)
+        self.w = np.random.randn(n_cols + 1, y.shape[1])
+        lim = int(0.9 * n_rows)
+        X_train, X_test = X[:lim], X[lim:]
+        y_train, y_test = y[:lim], y[lim:]
 
-        self.weights = np.random.randn(n_features + 1, y.shape[1])  # Adjust weights for multiple outputs
-
-        # Split data into training and validation set (90% train, 10% validation)
-        split_at = int(0.9 * n_samples)
-        X_train, X_val = X[:split_at], X[split_at:]
-        y_train, y_val = y[:split_at], y[split_at:]
-
-        best_weights = self.weights
-        best_val_loss = float('inf')
-        patience_counter = 0
+        best_weights = self.w
+        best_loss = float('inf')
+        patience_cnt = 0
 
         # Training loop
         for epoch in range(max_epochs):
             # Shuffle training data
-            indices = np.arange(X_train.shape[0])
-            np.random.shuffle(indices)
-            X_train_shuffled = X_train[indices]
-            y_train_shuffled = y_train[indices]
+            ind = np.arange(X_train.shape[0])
+            np.random.shuffle(ind)
+            X_train_shuffled = X_train[ind]
+            y_train_shuffled = y_train[ind]
 
-            # Mini-batch gradient descent
+            #Gradient Descent
             for start in range(0, X_train.shape[0], batch_size):
                 end = start + batch_size
-                X_batch = X_train_shuffled[start:end]
-                y_batch = y_train_shuffled[start:end]
+                X_b = X_train_shuffled[start:end]
+                y_b = y_train_shuffled[start:end]
                 
                 # Make predictions
-                y_pred = X_batch @ self.weights
+                y_pred = X_b @ self.weights
                 
                 # Compute errors
-                errors = y_pred - y_batch
+                errors = y_pred - y_b
 
                 # Compute gradients
-                grad_weights = X_batch.T @ errors / batch_size + regularization * self.weights / batch_size
+                grad_weights = X_b.T @ errors / batch_size + regularization * self.w / batch_size
                 
                 # Update weights
-                self.weights -= 0.01 * grad_weights
+                self.w -= 0.01 * grad_weights
 
             # Validate
-            val_pred = X_val @ self.weights
-            val_loss = np.mean((val_pred - y_val) ** 2)
-            self.loss_history.append(val_loss)  # Track validation loss
+            test_pred = X_test @ self.w
+            test_loss = np.mean((test_pred - y_test) ** 2)
+            self.loss.append(test_loss)  # Track validation loss
 
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
-                best_weights = self.weights
-                patience_counter = 0
+            if test_loss < best_loss:
+                best_loss = test_loss
+                best_weights = self.w
+                patience_cnt = 0
             else:
-                patience_counter += 1
-                if patience_counter >= patience:
+                patience_cnt += 1
+                if patience_cnt >= patience:
                     print(f"Early stopping after epoch {epoch + 1}")
                     break
 
-        self.weights = best_weights
+        self.w = best_weights
 
     def predict(self, X):
         X = np.hstack([X, np.ones((X.shape[0], 1))])  # Add bias term column
-        return X @ self.weights
+        return X @ self.w
 
     def score(self, X, y):
         y_pred = self.predict(X)
