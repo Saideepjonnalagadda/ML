@@ -29,7 +29,7 @@ def main():
     X_single = iris.data[:, 2:4]           
     y_single = iris.data[:, 1]            
     train_regression(X_single, y_single,
-                           output_type="Single Output - Petal length",
+                           output_type="Single Output - sepal width",
                            save_path='model_single_output.npz',
                            regularization=0)
 
@@ -37,7 +37,7 @@ def main():
     X_single = iris.data[:, 2:4]           
     y_single = iris.data[:, 1]            
     train_regression(X_single, y_single,
-                           output_type="L2 regularized Single Output - Petal length",
+                           output_type="L2 regularized Single Output - sepal width",
                            save_path='model_single_output.npz',
                            regularization=0.4)  
 

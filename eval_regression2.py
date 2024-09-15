@@ -17,7 +17,7 @@ def main():
     X_single = iris.data[:, :2]           
     y_single = iris.data[:, 2]            
     evaluate_regression_model(X_single, y_single,
-                              output_type="Single Output-Petal length)",
+                              output_type="Single Output-Petal length",
                               model_path='model_single_output.npz')
 if __name__ == "__main__":
     main()
