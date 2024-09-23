@@ -7,7 +7,7 @@ world = gpd.read_file(shapefilepaths)
 # Create a base Folium map
 world_map = folium.Map(location=[0, 0], zoom_start=2)
 
-# Add a choropleth overlay with population data
+# Add a choropleth overlay with population dat
 folium.Choropleth(
     geo_data=world.__geo_interface__,  # Converts the GeoDataFrame to GeoJSON
     data=world,  # The GeoDataFrame

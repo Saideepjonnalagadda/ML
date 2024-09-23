@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colormaps
 
 
-# Load sample GeoDataFrame 
+# Load sample GeoDataFrame
 shapefilepaths = 'C:\\Users\\saide\\Downloads\\110m_cultural\\ne_110m_admin_0_countries.shp'
 
 world = gpd.read_file(shapefilepaths)
