@@ -24,22 +24,25 @@ def train_regression(X, y, output_type, save_path, regularization=0, is_multiple
     print(f"Model saved at file location {save_path}.")
 
 def main():
-    iris = load_iris()    
-    # Single output regression - Predicting sepal length based on petal length and width
-    X_single = iris.data[:, 2:4]           
-    y_single = iris.data[:, 1]            
-    train_regression(X_single, y_single,
-                           output_type="Single Output - sepal width",
-                           save_path='model_single_output.npz',
-                           regularization=0)
+    iris = load_iris()
 
-    # Single output regression with L2 regularization- Predicting sepal length based on petal length and width
-    X_single = iris.data[:, 2:4]           
-    y_single = iris.data[:, 1]            
-    train_regression(X_single, y_single,
-                           output_type="L2 regularized Single Output - sepal width",
-                           save_path='model_single_output.npz',
-                           regularization=0.4)  
+    # Multiple output regression - Predicting both petal length and petal width based on sepal length and width
+    X_multiple = iris.data[:, :2]        
+    y_multiple = iris.data[:, 2:4]       
+    train_regression(X_multiple, y_multiple,
+                           output_type="Multiple Outputs-Petal Length and Petal Width",
+                           save_path='model_multiple_outputs.npz',
+                           regularization=0) 
+    
+    # Multiple output regression - Predicting both petal length and petal width based on sepal length and width
+    X_multiple = iris.data[:, :2]        
+    y_multiple = iris.data[:, 2:4]       
+    train_regression(X_multiple, y_multiple,
+                           output_type="Multiple Outputs-Petal Length and Petal Width",
+                           save_path='model_multiple_outputs.npz',
+                           regularization=0.4) 
+
+     
 
 if __name__ == "__main__":
     main()
